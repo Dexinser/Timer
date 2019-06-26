@@ -23,8 +23,10 @@ public class MainActivity extends AppCompatActivity {
         running = false;
     }
      public void onClickReset(View view){
+        final TextView timeContent = findViewById(R.id.time_content);
         running = false;
         seconds = 0;
+        timeContent.setText("");
     }
     public void onClickTag(View view){
         final TextView timeContent = findViewById(R.id.time_content);
