@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView timeContent = findViewById(R.id.time_content);
         running = false;
         seconds = 0;
+        num = 1;
         timeContent.setText("");
     }
     public void onClickTag(View view){
