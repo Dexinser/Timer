@@ -4,18 +4,46 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.text.method.ScrollingMovementMethod;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
- private int seconds = 0;
- private String time;
- private int num = 1;
- private boolean running;
-    @Override protected void onCreate(Bundle savedInstanceState) {
+
+    private List<Item> list = new ArrayList<>();
+    private int seconds = 0;
+    private String time;
+    private int num = 1;
+    private boolean running;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); setContentView(R.layout.activity_main);
         runTimer();
-        TextView timeContent = findViewById(R.id.time_content);
-        timeContent.setMovementMethod(new ScrollingMovementMethod());
     }
+
+    private void initList() {
+//        for (int i = 0; i < 100; i++) {
+        if(num == 1){
+            Item item = new Item("#" + num + "   " + time, R.drawable.one);
+            list.add(item);
+        }else if(num == 2) {
+            Item item = new Item("#" + num + "   " + time, R.drawable.two);
+            list.add(item);
+        }else if(num == 3) {
+            Item item = new Item("#" + num + "   " + time, R.drawable.three);
+            list.add(item);
+        }else{
+            Item item = new Item("#" + num + "   " + time, R.mipmap.ic_launcher);
+            list.add(item);
+        }
+        ItemAdapter itemAdapter = new ItemAdapter(MainActivity.this, R.layout.item, list);
+        ListView listView = findViewById(R.id.listview);
+        listView.setAdapter(itemAdapter);
+        num ++;
+//        }
+    }
+
      public void onClickStart(View view){
         running = true;
     }
@@ -23,34 +51,32 @@ public class MainActivity extends AppCompatActivity {
         running = false;
     }
      public void onClickReset(View view){
-        final TextView timeContent = findViewById(R.id.time_content);
         running = false;
         seconds = 0;
         num = 1;
-        timeContent.setText("");
+        list.clear();
+        ItemAdapter itemAdapter = new ItemAdapter(MainActivity.this, R.layout.item, list);
+        ListView listView = findViewById(R.id.listview);
+        listView.setAdapter(itemAdapter);
     }
     public void onClickTag(View view){
-        final TextView timeContent = findViewById(R.id.time_content);
-        if(num != 1){
-            timeContent.append("\n");
-        }
-        timeContent.append("#" + num + "   " + time);
-        num++;
+        initList();
     }
     private void runTimer(){
         final TextView timeView = findViewById(R.id.time_view);
         final Handler handler = new Handler(); handler.post(new Runnable() {
             @Override
             public void run() {
-                int hours = seconds/3600;
-                int minutes = (seconds%3600)/60;
-                int secs = seconds%60;
-                time = String.format("%02d:%02d:%02d",hours,minutes,secs);
+                int totalsec = seconds / 100;
+                int minutes = totalsec / 60;
+                int secs = totalsec % 60;
+                int millsecs = seconds % 100;
+                time = String.format("%02d:%02d:%02d",minutes,secs,millsecs);
                 timeView.setText(time);
                 if(running){
                     seconds++;
                 }
-                handler.postDelayed(this,1000);
+                handler.postDelayed(this,10);
             }
         });
     }
